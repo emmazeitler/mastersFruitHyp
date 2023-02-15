@@ -1,0 +1,19 @@
+﻿paper_id,genus,species,no_burial,burial,author_id
+1,solanum,lycoparcum,0,0.27,Almeida et al. 2022
+1,solanum,lycoparcum,0,0.05,Alemida et al. 2022
+2,micropholis,,0.05,0.2,Andresen 2001
+3,prunus,jamaskura,0.1,0.65,Koike et al. 2012
+3,prunus,verecunda,0.1,0.55,Koike et al. 2012
+3,prunus,grayana,0.1,0.65,Koike et al. 2012
+3,swida,controversa,0.1,0.59,Koike et al. 2012
+3,vitis,coignetiae,0.1,0.73,Koike et al. 2012
+4,,,0.15,0.35,Andresen and Levey 2004
+5,micropholis,,0.07,0.16,Andresen 2003
+5,micropholis,,0.08,0.31,Andresen 2003
+5,pouteria,,0.05,0.3,Andresen 2003
+5,pouteria,,0.11,0.28,Andresen 2003
+5,pouteria,,0.02,0.26,Andresen 2003
+5,pourouma,,0.45,0.68,Andresen 2003
+5,pourouma,,0.38,0.58,Andresen 2003
+5,pourouma,,0.44,0.6,Andresen 2003
+6,poulsenia,,0.12,0.11,Urrea-Galeano et al. 2019
