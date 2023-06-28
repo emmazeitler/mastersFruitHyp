@@ -1,15 +1,13 @@
 library(tidyverse)
-library(ggplot2)
 library(glmmTMB)
 library(car)
-library(readr)
 library(ggResidpanel)
 library(DHARMa)
 library(emmeans)
 library(MuMIn)
-library(dplyr)
 
-d1 <- read.csv("Fruit_csv.csv") #Run ZRemNo
+
+d1 <- read.csv("02_Clean_Data/Fruit_csv.csv") #Run ZRemNo
 #d1 <- read.csv("Fruit_NewDect_csv.csv") #Run Lat1
 d1$Block.ID <- as.factor(d1$Block.ID)
 d1$TimeID <- as.factor(d1$TimeID)
@@ -17,12 +15,8 @@ d1$TimeSiteID <- paste(d1$TimeID, d1$Block.ID, sep="_")
 d1$TimeSiteID <- as.factor(d1$TimeSiteID)
 d1$PairID <- as.factor(d1$PairID)
 
-##Filter data for NAs
 
-d1$Latency1 = gsub("NA", "", d1$Latency) %>% as.numeric()
-
-d1$Hour1 = gsub("NA", "", d1$Hour) %>% as.numeric()
-
+ write_csv(d1, "02_Clean_Data/fruit_clean.csv")
 ##Examine histograms##
 
 ##Removal event
@@ -42,7 +36,7 @@ ggplot(d1, aes(x = Hour1)) + geom_histogram(bins=12, color="white") + facet_wrap
 ##Create models/plot residuals/calculate emmeans##
 
 ##Model for removal event
-modRem1 <- glmmTMB(data = d1, Rem ~ Btreatment * Streatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=binomial)
+modRem1 <- glmmTMB(data = d1, Rem ~ Streatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=binomial)
 
 resRem1 <- simulateResiduals(fittedModel = modRem1, n = 250)
 hist(resRem1)
@@ -63,18 +57,19 @@ r.squaredGLMM(modRem1)
 
 #modRemNo2 <- glmmTMB(data = d1, RemNo1 ~ Btreatment * Streatment + (1|Block.ID) + (1|TimeID), family=nbinom2)
 
-modRemNo2 <- glmmTMB(data = d1, ZRemNo ~ Btreatment * Streatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=nbinom2)
+modRemNo2 <- glmmTMB(data = d1, ZRemNo ~ Streatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=nbinom2)
 
-#modRemNo2 <- glmmTMB(data = d1, ZRemNo ~ Btreatment * Streatment + (1|Block.ID) + (1|TimeID) + (1|PairID), family=nbinom2)
+modRemNo1 <- glmmTMB(data = d1, RemNo ~ Streatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=nbinom2)
+
 
 res_RemNo2 <- simulateResiduals(fittedModel = modRemNo2, n = 250)
 hist(res_RemNo2)
 plot(res_RemNo2)
 
 Anova(modRemNo2)
+Anova(modRemNo1)
 summary(modRemNo2)
 emmeans(modRemNo2, ~Streatment, type="response")
-emmeans(modRemNo2, ~Btreatment, type="response")
 
 r.squaredGLMM(modRemNo2)
 
@@ -99,25 +94,15 @@ testOverdispersion(res_RemNo2)
 
 modLat2 <- glmmTMB(data = d1 %>% filter(Rem == "1"), Latency1 ~ Streatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=gaussian)
 
-modLat3 <- glmmTMB(data = d1 %>% filter(Rem == "1"), Latency1 ~ Btreatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=gaussian)
+# modLat3 <- glmmTMB(data = d1 %>% filter(Rem == "1"), Latency1 ~ Btreatment + (1|Block.ID) + (1|TimeID) + (1|TimeSiteID), family=gaussian)
 
 res_Lat2 <- simulateResiduals(fittedModel = modLat2, n = 250)
 hist(res_Lat2)
 plot(res_Lat2)
 
-res_Lat3 <- simulateResiduals(fittedModel = modLat3, n = 250)
-hist(res_Lat3)
-plot(res_Lat3)
-
-
 Anova(modLat2)
 summary(modLat2)
 emmeans(modLat2, ~Streatment, type = "response")
-
-Anova(modLat3)
-summary(modLat3)
-emmeans(modLat3, ~Btreatment, type = "response")
-
 
 r.squaredGLMM(modLat2) 
 
@@ -147,7 +132,7 @@ emRem <- emmeans(modRem1, ~Streatment, type="response") %>% as.data.frame()
 
 ggplot(emRem, mapping = aes(x = Streatment, y = prob))
 
-plotRem <- ggplot() + labs(x = "Scat type", y = "Probability of removal") + 
+plotRem <- ggplot() + labs(x = "Dung type", y = "Probability of removal") + 
   geom_jitter(data=d1 %>% filter(Streatment=='FRUITY'), 
               aes(x=Streatment, y=Rem),  
               height=0, 
@@ -168,15 +153,18 @@ plotRem <- ggplot() + labs(x = "Scat type", y = "Probability of removal") +
   theme(axis.ticks.length=unit(0.3, "cm"),  
         axis.text.x = element_text(margin=margin(5,5,5,5,"pt"),colour="black"),
         axis.text.y = element_text(margin=margin(5,5,5,5,"pt"),colour="black")) + theme(text = element_text(size=20)) +
-  theme(legend.position="none")
+  theme(legend.position="none")+
+  ylim(0,1)
 
 
 plotRem
 
+# ggsave("05_Figures/ProbRem1.png", height = 5, width = 7)
+
 ##Figure for number of scat removed
 emRemNo <- emmeans(modRemNo2, ~Streatment, type="response") %>% as.data.frame()
 
-plotRemNo <- ggplot() + labs(x = "Scat type", y = "Count of removed dung") + geom_jitter(data=d1 %>% filter(Streatment=='FRUITY'), aes(x=Streatment, y=Rem),  height=0, width=.25, size=1, alpha=.1, color="#56B4E9") +
+plotRemNo <- ggplot() + labs(x = "Dung type", y = "Count of removed dung") + geom_jitter(data=d1 %>% filter(Streatment=='FRUITY'), aes(x=Streatment, y=Rem),  height=0, width=.25, size=1, alpha=.1, color="#56B4E9") +
   geom_errorbar(data=emRemNo ,aes(x=Streatment, y=response, ymin=(response-SE), ymax=(response+SE), color=Streatment), width=.2, lwd=1.25, position=position_dodge(width=0.5)) + 
   geom_point(data=emRemNo , aes(x=Streatment, y=response, color=Streatment), size=5, position=position_dodge(width=0.5)) +
   scale_color_manual(values=cbPalette) +
@@ -191,6 +179,8 @@ plotRemNo <- ggplot() + labs(x = "Scat type", y = "Count of removed dung") + geo
 
 
 plotRemNo
+
+ggsave("05_Figures/CountRem1.png", height = 5, width = 7)
 
 ##Figure for Latency
 emLat <- emmeans(modLat2, ~Streatment, type="response") %>% as.data.frame()
@@ -212,6 +202,8 @@ plotLat <- ggplot(emLat, aes(x = Streatment, y = emmean)) +
   labs(x = "Dung type", y = "Latency until removal") 
 
 plotLat
+
+ggsave("05_Figures/Lat1.png", height = 5, width = 7)
 
 ##Figure for Hour - do not use for assignment
 emH <- emmeans(modHour, ~Streatment, type="response") %>% as.data.frame()

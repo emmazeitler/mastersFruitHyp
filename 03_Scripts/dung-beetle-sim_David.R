@@ -122,6 +122,8 @@ levels(comb.sum$Treatment)[levels(comb.sum$Treatment) =="Fruit scat"] <- "75% bu
 comb.sum$Treatment <- factor(comb.sum$Treatment, levels=c('No burial', '50% burial',
 																											 '75% burial'))
 
+# write_csv(comb.sum, "02_Clean_Data/model_avg.csv")
+
 ggplot(comb.sum, aes(x = Treatment, y = p, fill = Treatment))+
 	geom_linerange(aes(ymin = lcl, ymax = ucl), 
 								 size = 2,  position = position_dodge(0.25))+
@@ -141,7 +143,9 @@ ggplot(comb.sum, aes(x = Treatment, y = p, fill = Treatment))+
 				plot.title = element_text(face = "bold", size = 25, hjust = 0.5),
 				axis.title.x = element_text(face = "bold"))+
 	ggtitle("Dung beetle bootstrap simulaton")
+
 ############################################################################
+
 ggplot(comb.sum, aes(x=Treatment, y=p)) +
   geom_point(aes(color = Treatment), size = 4) +
   geom_linerange(aes(ymin = lcl, ymax = ucl, color = Treatment), 
