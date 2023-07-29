@@ -28,6 +28,8 @@ grubbs.test(no.burial)
 beetle.burial <- c(0.27, 0.05, 0.2, 0.65, 0.55, 0.59, 0.73, 0.65, 0.35, 0.16, 0.31, 0.3, 0.28, 0.26, 0.68, 0.58, 0.6, 0.11)
 no.burial <- c(0.00, 0.00, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.15, 0.07, 0.08, 0.05, 0.11, 0.02, 0.45, 0.38, 0.44, 0.12)
 
+
+
 ## --------------- BOOTSTRAP SAMPLING MEANS  -----------------------------------
 
 # Beetle burial
@@ -51,7 +53,7 @@ hist(no.burial.boot)
 
 # Control
 p.remove.con <- 0.50
-p.no.remove.con <- 1-p.remove
+p.no.remove.con <- 1-p.remove.con
 
 # Make vector
 control.germ.success <- vector()
@@ -112,6 +114,16 @@ comb.sum <- comb %>%
 						margin = qnorm(0.995)*sqrt(p*(1-p)/n),
 						lcl = p - margin,
 						ucl = p + margin)
+
+new.comb.sum <- comb %>% 
+  group_by(Treatment) %>% 
+  summarize(p = mean(Probability),
+            n = n(),
+            sd = sd(Probability),
+            se = sqrt(p*(1-p)/n),
+            margin = qt(0.975, df=n-1)*sd/sqrt(n),
+            lcl = p - margin,
+            ucl = p + margin)
 
 ## --------------- CONFIDENCE INTERVAL FIGURE ----------------------------------
 

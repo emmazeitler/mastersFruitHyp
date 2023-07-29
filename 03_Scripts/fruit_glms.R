@@ -26,6 +26,8 @@ summary(modRem1)
 emmeans(modRem1, ~Streatment, type = "response")
 remev.mod <- emmeans(modRem1, ~Streatment, type = "response") %>% as.data.frame()
 
+confint(remev.mod, method = "boot", nsim = 1000)
+
 # write_csv(remev.mod, "02_Clean_Data/remev_mod.csv")
 
 #### Removal Amount Model ####

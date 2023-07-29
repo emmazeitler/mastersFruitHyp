@@ -106,17 +106,18 @@ ggplot() +
                    xend=x, 
                    y=no_burial, 
                    yend=burial), 
-               color="grey") +
+               color="darkgrey",
+               linewidth = 1.5) +
   geom_point(data=filter(test2, germtype=="a_no_burial"), 
              aes(x=x, 
                  y=germrate,
                  color = germtype), 
-             size = 3) +
+             size = 5) +
   geom_point(data=filter(test2, germtype=="b_burial"),
              aes(x=x,
                  y = germrate,
                  color=germtype), 
-             size = 3) + 
+             size = 5) + 
   scale_color_manual(values = c("#8B7F47", "#0072B2"),
                      labels = c("Unburied", "Buried"))+
   scale_x_discrete(labels=c("A" = "Almeida et al. (2022)",
@@ -126,11 +127,11 @@ ggplot() +
                             "E" = "Andresen (2003)",
                             "F" = "Andresen (2003)",
                             "G" = "Andresen (2003)",
-                            "H" = "Koike et al.(2012)",
-                            "I" = "Koike et al.(2012)",
-                            "J" = "Koike et al.(2012)",
-                            "K" = "Koike et al.(2012)",
-                            "L" = "Koike et al.(2012)",
+                            "H" = "Koike et al. (2012)",
+                            "I" = "Koike et al. (2012)",
+                            "J" = "Koike et al. (2012)",
+                            "K" = "Koike et al. (2012)",
+                            "L" = "Koike et al. (2012)",
                             "M" = "Andresen (2003)",
                             "N" = "Urrea-Galeano et al. (2019)",
                             "O" = "Andresen and Levey (2004)",
@@ -138,8 +139,16 @@ ggplot() +
                             "Q" = "Andresen (2003)",
                             "R" = "Andresen (2003)"))+
   coord_flip()+
-  labs(x = "Germination rate",
-       y = "Source publication",
+  labs(y = "Germination rate",
+       x = "Source publication",
        color = NULL)+
-  theme_bw()
+  theme_bw() +
+  theme(axis.text = element_text(size = 12,
+                                 color = "black"),
+        axis.title = element_text(size = 18,
+                                  color="black",
+                                  face="bold"),
+        legend.text = element_text(size=12,
+                                   color="black"))
 
+ggsave("05_Figures/burial_v_nonburial_2.png", height=8, width = 9)

@@ -42,7 +42,7 @@ ggplot(data=rem.ev)+
         axis.text.x = element_text(color = "black",
                                    size = 12))
 
-ggsave("05_Figures/ProbRem2.jpg", height = 5, width = 8)
+# ggsave("05_Figures/ProbRem2.jpg", height = 5, width = 8)
 
 #### REMOVAL AMOUNT ####
 
@@ -62,6 +62,7 @@ ggplot(data=remno)+
                     ymax = (response + (1.96*SE)),
                     color=Streatment,
                     width = .1),
+                linewidth = 2,
                 position = position_dodge(width=0.4))+
   scale_y_continuous(limits = c(0, 10))+
   scale_color_manual(values=c("#E69F00", "#56B4E9"))+
@@ -75,8 +76,10 @@ ggplot(data=remno)+
                                    size = 12),
         axis.text.x = element_text(color = "black",
                                    size = 12),
-        axis.title = element_text(size = 14))
+        axis.title = element_text(size = 18,
+                                  face = "bold"))
 
+# ggsave("05_Figures/CountRem2.jpg", height = 5, width = 8)
 
 #### LATENCY ####
 
@@ -96,6 +99,7 @@ ggplot(data=lat)+
                     ymax = (response + (1.96*SE)),
                     color=Streatment,
                     width = .1),
+                size = 2, 
                 position = position_dodge(width=0.4))+
   scale_y_continuous(limits = c(0, 24))+
   scale_color_manual(values=c("#E69F00", "#56B4E9"))+
@@ -109,7 +113,10 @@ ggplot(data=lat)+
                                    size = 12),
         axis.text.x = element_text(color = "black",
                                    size = 12),
-        axis.title = element_text(size = 14))
+        axis.title = element_text(size = 18,
+                                  face = "bold"))
+
+# ggsave("05_Figures/Lat.jpg", height = 5, width = 8)
 
 #### GERMINATION RATE ####
 
@@ -132,8 +139,8 @@ ggplot(data = germ.rates)+
                 width=0,
                 linewidth=1.5)+
   scale_y_continuous(limits = c(0,0.4))+
-  labs(x="Burial Proportion",
-       y="Germination Probability",
+  labs(x="Burial proportion",
+       y="Germination probability",
        color=NULL)+
   scale_color_manual(values=c("black", "#E69F00", "#56B4E9"))+
   theme(legend.position = "none",
@@ -146,8 +153,11 @@ ggplot(data = germ.rates)+
         panel.grid.major.y = element_line(color="gray",
                                           linetype = "longdash"),
         panel.grid.major.x = element_blank(),
-        axis.title = element_text(size = 14),
+        axis.title = element_text(size = 18,
+                                  face = "bold"),
         )
+
+ggsave("05_Figures/bootstrap_burial.jpg", height = 5, width = 5)
 
 #### Cowplot ####
 
@@ -156,14 +166,16 @@ p1 <- ggplot(data=rem.ev)+
                  y = prob,
                  color = Streatment),
              size = 5)+
+  annotate("text", x = 2.3, y = 1.00, label = "p = 0.014", size = 5)+
   geom_errorbar(aes(x = Streatment,
                     y = prob,
                     ymin = (prob - (1.96*SE)), 
                     ymax = (prob + (1.96*SE)),
                     color=Streatment,
                     width = .1),
+                size = 2,
                 position = position_dodge(width=0.4))+
-  scale_color_manual(values=c("#98764c", "#821125"))+
+  scale_color_manual(values=c("#E69F00", "#56B4E9"))+
   scale_y_continuous(limits = c(0, 1.0))+
   labs(x = NULL, 
        y = "Probability of removal", 
@@ -173,7 +185,8 @@ p1 <- ggplot(data=rem.ev)+
         axis.line = element_line(colour = "black"),
         axis.text.y = element_text(color = "black",
                                    size = 12),
-        axis.title.y = element_text(size = 14),
+        axis.title.y = element_text(size = 14,
+                                    face = "bold"),
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -193,10 +206,12 @@ p2 <- ggplot(data=remno)+
                     ymax = (response + (1.96*SE)),
                     color=Streatment,
                     width = .1),
+                linewidth = 2,
                 position = position_dodge(width=0.4))+
-  scale_y_continuous(limits = c(0, 11))+
-  scale_color_manual(values=c("#98764c", "#821125"))+
-  labs(x = "Diet treatment", 
+  annotate("text", x = 2.3, y = 10.5, label = "p = 0.003", size = 5)+
+  scale_y_continuous(limits = c(0, 10.5))+
+  scale_color_manual(values=c("#E69F00", "#56B4E9"))+
+  labs(x = NULL, 
        y = "Removal amount", 
        color = NULL)+
   theme(legend.position = "none",
@@ -204,10 +219,11 @@ p2 <- ggplot(data=remno)+
         axis.line = element_line(colour = "black"),
         axis.text.y = element_text(color = "black",
                                    size = 12),
+        axis.title.y = element_text(size = 14,
+                                    face = "bold"),
         axis.title.x=element_blank(),
         axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.title = element_text(size = 14))   
+        axis.ticks.x=element_blank())
 
 p2
 
@@ -224,25 +240,32 @@ p3 <- ggplot(data=lat)+
                     ymax = (response + (1.96*SE)),
                     color=Streatment,
                     width = .1),
+                size = 2, 
                 position = position_dodge(width=0.4))+
+  annotate("text", x = 2.3, y = 24.00, label = "p = 0.076", size = 5)+
   scale_y_continuous(limits = c(0, 24))+
-  scale_color_manual(values=c("#98764c", "#821125"))+
+  scale_color_manual(values=c("#E69F00", "#56B4E9"))+
   labs(x = "Diet treatment", 
        y = "Time until removal (h)", 
        color = NULL)+
   theme(legend.position = "none",
         panel.background = element_rect(fill="white"),
         axis.line = element_line(colour = "black"),
-        axis.text.y = element_text(color = "black",
+        axis.text = element_text(color = "black",
                                    size = 12),
-        axis.text.x = element_text(color = "black",
-                                   size = 12),
-        axis.title = element_text(size = 14))
+        axis.title = element_text(size = 14,
+                                    face = "bold"))
+
+
+
 p3
 
 ## Gridded
 
-g1 <- plot_grid(p1, p2,p3, ncol=1, align="v")
+g1 <- plot_grid(p1, p2, p3, 
+                ncol=1, 
+                align="v")
 g1
+
 
 ggsave("test.jpg", height=10, width=5)
